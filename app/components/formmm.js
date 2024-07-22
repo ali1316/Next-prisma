@@ -9,7 +9,7 @@ const Formmm = ({id}) => {
             <button
                 className="bg-blue-700 text-white px-2 py-2 rounded-sm"
                 type="submit"
-                disabled={pending}
+                // disabled={pending}
             >
                 {pending ? 'Submitting...' : 'Submit'}
             </button>
