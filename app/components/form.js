@@ -3,6 +3,7 @@
 
 import { createPost } from '@/app/components/actions';
 import { useFormStatus } from 'react-dom';
+import Dropdown from "./dropdown";
 export default function PostForm() {
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -21,26 +22,29 @@ export default function PostForm() {
             </button>
         )
     }
-
+    const username = prisma.user.getAll('username');
     return (
         <form
             className="p-4 flex flex-col gap-y-2 w-[300px]"
             onSubmit={handleSubmit}
         >
-        <input
-        type="text"
-    name="title"
-    placeholder="Title"
-    className="px-2 py-2 rounded-sm" required
-    />
-    <textarea
-        className="px-2 py-2 rounded-sm"
-    rows={5}
-    name="content"
-    placeholder="Content"
-    required
-    />
-    <SubmitBtn/>
+            <input
+                type="text"
+                name="title"
+                placeholder="Title"
+                className="px-2 py-2 rounded-sm" required
+            />
+            <textarea
+                className="px-2 py-2 rounded-sm"
+                rows={5}
+                name="content"
+                placeholder="Content"
+                required
+            />
+
+            <Dropdown users={users}/>
+
+            <SubmitBtn/>
         </form>
-);
+    );
 }

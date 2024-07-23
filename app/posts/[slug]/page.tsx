@@ -7,14 +7,17 @@ export default async function postPage({params}){
         where : {
             slug: params.slug,
         },
+        include:{
+            User : true,
+        }
     });
 
     return(
         <>
             <main className="container mx-auto pt-24 text-center gap-5 flex flex-col">
-                <h1 className="text-3xl font-semibold">{post?.title}</h1>
-                <p>{post?.content}</p>
-                <h1 className="text-lg m-auto">Edit form </h1>
+                {/*<h1 className="text-3xl font-semibold">{post?.title}</h1>*/}
+                {/*<p>{post?.content}</p>*/}
+                {/*<h1 className="text-lg m-auto">Edit form </h1>*/}
                 <div className="flex items-center container content-center gap-5">
 
                     <EditForm post={post}/>

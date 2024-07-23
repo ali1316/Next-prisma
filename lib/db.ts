@@ -1,5 +1,9 @@
 import { PrismaClient } from '@prisma/client'
+import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
 
+const client = new PrismaClient();
+
+const adapter = new PrismaAdapter(client.session, client.user);
 const prismaClientSingleton = () => {
     return new PrismaClient()
 }
