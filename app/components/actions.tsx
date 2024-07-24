@@ -3,37 +3,37 @@
 import prisma from "@/lib/db";
 import {revalidatePath} from "next/cache";
 import exp from "node:constants";
-import {redirect} from "next/navigation";
-import { Lucia } from "lucia";
-import {cookies} from "next/headers";
-import { verify } from "@node-rs/argon2";
-import { lucia } from "@/lib/auth";
+// import { Lucia } from "lucia";
+// import {cookies} from "next/headers";
+// // import { verify } from "@node-rs/argon2";
+// import { lucia } from "@/lib/auth";
 import { redirect } from "next/navigation";
-export const lucia = new Lucia(adapter, {
-    sessionCookie: {
-        expires: false,
-        attributes: {
-            secure: process.env.NODE_ENV === "production"
-        }
-    },
-    getUserAttributes: (attributes) => {
-        return {
-            // attributes has the type of DatabaseUserAttributes
-            username: attributes.username
-        };
-    }
-});
-
-declare module "lucia" {
-    interface Register {
-        Lucia: typeof lucia;
-        DatabaseUserAttributes: DatabaseUserAttributes;
-    }
-}
-
-interface DatabaseUserAttributes {
-    username: string;
-}
+// import {adapter} from "next/dist/server/web/adapter";
+// export as const lucia = new Lucia(adapter, {
+//     sessionCookie: {
+//         expires: false,
+//         attributes: {
+//             secure: process.env.NODE_ENV === "production"
+//         }
+//     },
+//     getUserAttributes: (attributes) => {
+//         return {
+//             // attributes has the type of DatabaseUserAttributes
+//             username: attributes.username
+//         };
+//     }
+// });
+//
+// declare module "lucia" {
+//     interface Register {
+//         Lucia: typeof lucia;
+//         DatabaseUserAttributes: DatabaseUserAttributes;
+//     }
+// }
+//
+// interface DatabaseUserAttributes {
+//     username: string;
+// }
 export async function CreatPost(formData: FormData) {
     try {
         await prisma.post.create({
@@ -74,7 +74,7 @@ export async function editPost(formData: FormData){
                 .toLowerCase() ,
             published : formData.get("published") == "on",
             // userId : formData.get("id") as string,
-            User : formData.get("User") as string,
+            // User : formData.get("User") as string,
     }
     }
     );redirect("/posts")
