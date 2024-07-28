@@ -1,23 +1,25 @@
-import {Signup} from '@/app/components/actions'
-export default async function Page() {
+import {signup} from '@/app/components/actions'
+export default async function Signup() {
 
     return (
         <>
             <h1>Create an account</h1>
-            <form action={Signup}>
-                <label htmlFor="username">Username</label>
-                <input name="username" id="username" />
-                <br />
-                <label htmlFor="password">Password</label>
-                <input type="password" name="password" id="password" />
-                <br />
-                <button>Continue</button>
+            <form className="p-4 flex flex-col gap-y-2 w-[300px]" action={signup}>
+                <input type="text" name="username" placeholder="User Name" className="px-2 py-2 rounded-sm" required/>
+                <input type="email" name="email" placeholder="email" className="px-2 py-2 rounded-sm" required/>
+                <input type="password" name="password" placeholder="password" className="px-2 py-2 rounded-sm" required/>
+                <button
+                    className="bg-blue-700 text-white px-2 py-2 rounded-sm"
+                    type="submit"
+                    // disabled={pending}
+                >
+                    Submit
+                </button>
             </form>
         </>
     );
 }
 
-async function Signup(_: any, formData: FormData): Promise<ActionResult> {}
 
 interface ActionResult {
     error: string;

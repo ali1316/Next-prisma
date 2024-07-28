@@ -8,7 +8,7 @@ export const Dropdown = ({ users }) => {
             <option value="">Select a user</option>
             {users.map((user) => (
                 <option key={user.id} value={user.id}>
-                    {user.userName}
+                    {user.username}
                 </option>
             ))}
         </select>

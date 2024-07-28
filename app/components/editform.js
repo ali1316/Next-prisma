@@ -14,7 +14,7 @@ export async function EditForm({post}) {
         <input name="slug" type="hidden" defaultValue={title}   className="px-2 py-2 rounded-sm"/>
         <div className="flex px-2 py-2 gap-6 "><span>Content:</span><input name="content" defaultValue={content} rows={5} className="rounded-sm"/></div>
         <div className="justify-between m-2 gap-4 flex"><span>Published</span><span><input name="published" type="checkbox" defaultChecked={published} id="published"    className="px-2 py-2 rounded-sm"/></span></div>
-        <div className="flex px-2 py-2 gap-6 "><span>Name:</span><input name="User" defaultValue={User.userName} className="rounded-sm" readonly='readonly'/></div>
+        <div className="flex px-2 py-2 gap-6 "><span>Name:</span><input name="User" defaultValue={User.username} className="rounded-sm" readonly='readonly'/></div>
         <button type="submit"  className="bg-blue-700 text-white px-2 py-2 rounded-sm"
         >Edit</button>
 

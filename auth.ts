@@ -1,21 +1,17 @@
-// src/auth.ts
-import { Lucia } from "lucia";
-import db from "@/lib/db";
+import { lucia } from "lucia";
+import { nextjs_future } from "lucia/middleware";
+import { prisma } from "@lucia-auth/adapter-prisma";
+import { PrismaClient } from "@prisma/client";
 
-const adapter = new BetterSQLite3Adapter(db); // your adapter
+const client = new PrismaClient();
 
-export const lucia = new Lucia(adapter, {
+export const auth = lucia({
+    adapter: prisma(client),
+    env: process.env.NODE_ENV === "development" ? "DEV" : "PROD",
+    middleware: nextjs_future(),
     sessionCookie: {
-        attributes: {
-            // set to `true` when using HTTPS
-            secure: process.env.NODE_ENV === "production"
-        }
+        expires: false
     }
 });
 
-// IMPORTANT!
-declare module "lucia" {
-    interface Register {
-        Lucia: typeof lucia;
-    }
-}
+export type Auth = typeof auth;

@@ -1,24 +1,12 @@
-import {Login} from '@/app/components/actions'
+import {login} from "@/app/components/actions";
 
-export default async function Page() {
+
+export default function Login() {
     return (
-        <>
-            <h1>Sign in</h1>
-            <form action={Login}>
-                <label htmlFor="username">Username</label>
-                <input name="username" id="username" />
-                <br />
-                <label htmlFor="password">Password</label>
-                <input type="password" name="password" id="password" />
-                <br />
-                <button>Continue</button>
-            </form>
-        </>
+        <form action={login}>
+            <input name="username" type="text" required className="border-red-700 border"/>
+            <input name="password" type="password" className="border-red-700 border" required />
+            <button type="submit">Log in</button>
+        </form>
     );
-}
-
-async function Login(_: any, formData: FormData): Promise<ActionResult> {}
-
-interface ActionResult {
-    error: string;
 }

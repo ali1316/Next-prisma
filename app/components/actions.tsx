@@ -1,39 +1,17 @@
 "use server";
+import { verify } from "@node-rs/argon2";
+import { lucia } from "@/lib/auth";
+import { cookies } from "next/headers";
+import { hash } from "@node-rs/argon2";
 
 import prisma from "@/lib/db";
 import {revalidatePath} from "next/cache";
 import exp from "node:constants";
-// import { Lucia } from "lucia";
-// import {cookies} from "next/headers";
-// // import { verify } from "@node-rs/argon2";
-// import { lucia } from "@/lib/auth";
+
 import { redirect } from "next/navigation";
-// import {adapter} from "next/dist/server/web/adapter";
-// export as const lucia = new Lucia(adapter, {
-//     sessionCookie: {
-//         expires: false,
-//         attributes: {
-//             secure: process.env.NODE_ENV === "production"
-//         }
-//     },
-//     getUserAttributes: (attributes) => {
-//         return {
-//             // attributes has the type of DatabaseUserAttributes
-//             username: attributes.username
-//         };
-//     }
-// });
-//
-// declare module "lucia" {
-//     interface Register {
-//         Lucia: typeof lucia;
-//         DatabaseUserAttributes: DatabaseUserAttributes;
-//     }
-// }
-//
-// interface DatabaseUserAttributes {
-//     username: string;
-// }
+import db from "@/lib/db";
+import {validateRequest} from "@/lib/validate-req";
+
 export async function CreatPost(formData: FormData) {
     try {
         await prisma.post.create({
@@ -79,25 +57,25 @@ export async function editPost(formData: FormData){
     }
     );redirect("/posts")
 }
-export async function CreatUser(formData: FormData){
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
-    await prisma.user.create({
-        data: {
-            userName : formData.get("username") as string,
-            email : formData.get("email") as string,
-            password: formData.get("password") as string,
-
-        },
-    });
-    revalidatePath("/posts") /// to automataiclly refresh the path
-    redirect("/posts")
-}
+// export async function CreatUser(formData: FormData){
+//     // await new Promise((resolve) => setTimeout(resolve, 2000));
+//     await prisma.user.create({
+//         data: {
+//             userName : formData.get("username") as string,
+//             email : formData.get("email") as string,
+//             password: formData.get("password") as string,
+//
+//         },
+//     });
+//     revalidatePath("/posts") /// to automataiclly refresh the path
+//     redirect("/posts")
+// }
 ///////signup validatio
-async function Signup(_: any, formData: FormData): Promise<ActionResult> {
+export async function signup(formData: FormData) {
     "use server";
-    const username = formData.get("username");
-    // username must be between 4 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _
-    // keep in mind some database (e.g. mysql) are case insensitive
+
+    const username = formData.get("username") as string;  // Ensure this is string, not String
+    const email = formData.get("email") as string;
     if (
         typeof username !== "string" ||
         username.length < 3 ||
@@ -108,37 +86,51 @@ async function Signup(_: any, formData: FormData): Promise<ActionResult> {
             error: "Invalid username"
         };
     }
-    const password = formData.get("password");
+    const password = formData.get("password") as string;  // Ensure this is string, not String
     if (typeof password !== "string" || password.length < 6 || password.length > 255) {
         return {
             error: "Invalid password"
         };
     }
 
-    const passwordHash = await hash(password, {
+    const password_hash = await hash(password, {
         // recommended minimum parameters
         memoryCost: 19456,
         timeCost: 2,
         outputLen: 32,
         parallelism: 1
     });
-    const userId = generateIdFromEntropySize(10); // 16 characters long
 
-    // TODO: check if username is already used
-    await db.table("user").insert({
-        id: userId,
-        username: username,
-        password_hash: passwordHash
+    // Check if username is already used
+    const existingUser = await db.user.findUnique({
+        where: { username: username.toLowerCase() }
+    });
+    if (existingUser) {
+        return {
+            error: "Username already taken"
+        };
+    }
+
+    // Create new user
+    const user = await db.user.create({
+        data: {
+            username: username.toLowerCase(),
+            password_hash: password_hash,
+            email : email
+
+        }
     });
 
-    const session = await lucia.createSession(userId, {});
+    const session = await lucia.createSession(user.id, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
     cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-    return redirect("/");
+    return redirect("/posts");
+
 }
+
 //////////////// login
-async function Login(_: any, formData: FormData): Promise<ActionResult> {
-    "use server";
+export async function login( formData: FormData){
+
     const username = formData.get("username");
     if (
         typeof username !== "string" ||
@@ -157,25 +149,17 @@ async function Login(_: any, formData: FormData): Promise<ActionResult> {
         };
     }
 
-    const existingUser = await db
-        .table("user")
-        .where("username", "=", username.toLowerCase())
-        .get();
+    // Check if the user exists
+    const existingUser = await db.user.findUnique({
+        where: { username: username.toLowerCase() }
+    });
     if (!existingUser) {
-        // NOTE:
-        // Returning immediately allows malicious actors to figure out valid usernames from response times,
-        // allowing them to only focus on guessing passwords in brute-force attacks.
-        // As a preventive measure, you may want to hash passwords even for invalid usernames.
-        // However, valid usernames can be already be revealed with the signup page among other methods.
-        // It will also be much more resource intensive.
-        // Since protecting against this is non-trivial,
-        // it is crucial your implementation is protected against brute-force attacks with login throttling etc.
-        // If usernames are public, you may outright tell the user that the username is invalid.
         return {
             error: "Incorrect username or password"
         };
     }
 
+    // Verify the password
     const validPassword = await verify(existingUser.password_hash, password, {
         memoryCost: 19456,
         timeCost: 2,
@@ -190,6 +174,22 @@ async function Login(_: any, formData: FormData): Promise<ActionResult> {
 
     const session = await lucia.createSession(existingUser.id, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
+    cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+    return redirect("/posts");
+}
+
+export async function logout(){
+
+    const { session } = await validateRequest();
+    if (!session) {
+        return {
+            error: "Unauthorized"
+        };
+    }
+
+    await lucia.invalidateSession(session.id);
+
+    const sessionCookie = lucia.createBlankSessionCookie();
     cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
     return redirect("/");
 }
