@@ -70,9 +70,9 @@ export async function editPost(formData: FormData){
 //     revalidatePath("/posts") /// to automataiclly refresh the path
 //     redirect("/posts")
 // }
-///////signup validatio
+///////signup validation ////////////////////////////////
 export async function signup(formData: FormData) {
-    "use server";
+
 
     const username = formData.get("username") as string;  // Ensure this is string, not String
     const email = formData.get("email") as string;
@@ -128,7 +128,7 @@ export async function signup(formData: FormData) {
 
 }
 
-//////////////// login
+//////////////// login /////////////////////////
 export async function login( formData: FormData){
 
     const username = formData.get("username");
@@ -168,7 +168,7 @@ export async function login( formData: FormData){
     });
     if (!validPassword) {
         return {
-            error: "Incorrect username or password"
+            error : "errorrr"
         };
     }
 
@@ -177,7 +177,7 @@ export async function login( formData: FormData){
     cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
     return redirect("/posts");
 }
-
+///////////// LogOut////////////////////////
 export async function logout(){
 
     const { session } = await validateRequest();
