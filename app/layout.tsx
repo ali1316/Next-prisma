@@ -4,6 +4,8 @@ import "./globals.css";
 import {validateRequest} from "@/lib/validate-req";
 import {logout} from "@/app/components/actions";
 import Link from "next/link";
+import {Avatar, Badge, Box, Button, Card, Flex, Theme} from "@radix-ui/themes";
+import '@radix-ui/themes/styles.css';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,17 +17,41 @@ export async function Loginout() {
   const {user} = await validateRequest();
 
   return (
-      <>
+      <Card className="w-screen	">
+
+      <Flex gap="2" className="pt-3">
+
         <span>{user &&
             <form action={logout}>
-                <button>logout</button>
-                <span className="m-2">Hello! :{user.username}</span>
+
+                <Box maxWidth="240px">
+                        <Flex gap="3" align="center">
+                            <Avatar
+                                size="2"
+                                radius="full"
+                                fallback="P"
+                                alt="profile picture"
+                            />
+                            <Box>
+                                <div>
+                                   {user.username}
+                                </div>
+
+                            </Box>
+                            <Button color="crimson" variant="soft" size="1" className="self-end justify-end	ml-10	" >
+                                logout</Button>
+                        </Flex>
+                </Box>
             </form>
         }
         </span>
-        <span className="p-2 mt-5 pt-6">{!user && <Link href="/login">login</Link>}</span>
-        <span className="p-2 mt-5 pt-6">{!user && <Link href="/signup">signUP</Link>}</span>
-      </>
+          <span >{!user &&   <Button color="cyan" variant="soft">
+              <Link href="/login">login</Link></Button>}</span>
+        <span >{!user && <Button color="gray" variant="outline" highContrast>
+            <Link href="/signup">signup</Link></Button>}</span>
+      </Flex>
+      </Card>
+
   );
 }
 export default function RootLayout({
@@ -35,10 +61,14 @@ export default function RootLayout({
 }>) {
   return (
       <html lang="en">
-
       <body className={inter.className}>
+      <Theme appearance="dark" radius="full" scaling="110%">
+
       <Loginout/>
+
       {children}
+      </Theme>
+
       </body>
       </html>
   );

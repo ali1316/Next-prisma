@@ -83,14 +83,13 @@ export async function signup(formData: FormData) {
         !/^[a-z0-9_-]+$/.test(username)
     ) {
         return {
-            error: "Invalid username"
-        };
+            error: "Username is invalid",
+        }
+        console.log("user name invalid")
     }
     const password = formData.get("password") as string;  // Ensure this is string, not String
     if (typeof password !== "string" || password.length < 6 || password.length > 255) {
-        return {
-            error: "Invalid password"
-        };
+        console.log("Password must be at least 6 characters long");
     }
 
     const password_hash = await hash(password, {

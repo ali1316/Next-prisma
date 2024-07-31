@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-const { blackA, green, mauve, slate, violet, red } = require('@radix-ui/colors');
+const { blackA, green, mauve, slate, violet, red ,cyan} = require('@radix-ui/colors');
 
 const config: Config = {
   content: [
@@ -20,6 +20,7 @@ const config: Config = {
         ...slate,
         ...violet,
         ...red,
+        ...cyan,
       },
       keyframes: {
         hide: {

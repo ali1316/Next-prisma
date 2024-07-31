@@ -2,15 +2,9 @@ export const Dropdown = ({ users }) => {
     if (!users || users.length === 0) {
         return <p>Loading users...</p>;
     }
-
+    const userId = users.Id
+    console.log(userId)
     return (
-        <select name="userId" className="px-2 py-2 rounded-sm">
-            <option value="">Select a user</option>
-            {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                    {user.username}
-                </option>
-            ))}
-        </select>
+        <input readonly='readonly' name="userId" value={users.id} type="hidden"/>
     );
 };

@@ -6,16 +6,19 @@ import Delete from "@/app/components/delete";
 import { Dropdown } from "@/app/components/dropdown";
 import { useEffect, useState } from "react";
 import { getUsers } from "./getuseraction";
+import {validateRequest} from "@/lib/validate-req";
 
 const Formmm = ({ id }) => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         async function fetchUsers() {
             try {
                 const fetchedUsers = await getUsers();
                 setUsers(fetchedUsers);
+                console.log("fetched",fetchedUsers);
             } catch (error) {
                 console.error("Error fetching users:", error);
             } finally {
