@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
-const { blackA, green, mauve, slate, violet, red ,cyan} = require('@radix-ui/colors');
+import {jade} from "@radix-ui/colors";
+const { blackA, green, mauve, slate, violet, red ,cyan,jade} = require('@radix-ui/colors');
+/** @type {import('tailwindcss').Config} */
 
 const config: Config = {
   content: [
@@ -21,6 +23,7 @@ const config: Config = {
         ...violet,
         ...red,
         ...cyan,
+        ...jade,
       },
       keyframes: {
         hide: {
@@ -51,6 +54,7 @@ const config: Config = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0px' },
         },
+
       },animation: {
         hide: 'hide 100ms ease-in',
         slideIn: 'slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1)',
@@ -59,6 +63,7 @@ const config: Config = {
         contentShow: 'contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         slideDown: 'slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1)',
         slideUp: 'slideUp 300ms cubic-bezier(0.87, 0, 0.13, 1)',
+
       },
     },
   },

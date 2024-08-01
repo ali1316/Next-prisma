@@ -7,7 +7,7 @@ const Delete = ({id}) => {
     <>
     <form action={Delete_post} className="flex" >
         <input name="id" value={id} type="hidden"/>
-        <Button  color="indigo" variant="soft">
+        <Button  color="ruby" variant="soft">
             <TrashIcon /> Delete
         </Button>
     </form>
