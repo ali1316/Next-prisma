@@ -13,26 +13,27 @@ import db from "@/lib/db";
 import {validateRequest} from "@/lib/validate-req";
 
 export async function CreatPost(formData: FormData) {
-    try {
-        await prisma.post.create({
-            data: {
-                title: formData.get("title") as string,
-                slug: (formData.get("title") as string)
-                    .replace(/\s+/g, "-")
-                    .toLowerCase(),
-                content: formData.get("content") as string,
-                userId: formData.get("userId") as string,
-            },
-        });
-    } catch (e) {
-        console.log(e);
-        throw new Error(`Error creating post: ${e.message}`);
-    }
+    // try {
+    await prisma.post.create({
+        data: {
+            title: formData.get("title") as string,
+            slug: (formData.get("title") as string)
+                .replace(/\s+/g, "-")
+                .toLowerCase(),
+            content: formData.get("content") as string,
+            userId: formData.get("userId") as string,
+        },
+    });
+// }
+        // catch (e) {
+    //     console.log(e);
+    //     throw new Error(`Error creating post: ${e?.message}`);
+    // }
     revalidatePath("/posts");
 }
 
 export async function Delete_post(formData: FormData){
-    const id = formData.get("id");
+    const id = formData.get("id") as string;
     await prisma.post.delete({
         where : {id}
     })

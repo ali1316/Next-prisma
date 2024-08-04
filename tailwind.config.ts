@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-import {jade} from "@radix-ui/colors";
 const { blackA, green, mauve, slate, violet, red ,cyan,jade} = require('@radix-ui/colors');
 /** @type {import('tailwindcss').Config} */
 

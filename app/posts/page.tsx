@@ -6,13 +6,15 @@ import Formmm from "@/app/components/formmm";
 import '@radix-ui/themes/styles.css';
 
 import {validateRequest} from "@/lib/validate-req";
-import {Theme, Table, Flex, ThemePanel, Box,Container, DecorativeBox} from '@radix-ui/themes';
-import { ThemeProvider } from 'next-themes';
+import {Theme, Table, Flex, ThemePanel, Box,Container} from '@radix-ui/themes';
+// import { ThemeProvider } from 'next-themes';
+import {useState} from "react";
+import {EditForm} from "@/app/components/editform";
 
 export default async function posts(){
     const posts = await prisma.post.findMany();
     const posts_count =prisma.post.count()
-
+    const {user} = await validateRequest();
     return (
         <>
 
@@ -34,7 +36,7 @@ export default async function posts(){
 
                         <Table.Root layout="auto" size="3" className="p-5 space-between" variant="surface">
                             <Table.Header>
-                                <Table.Row gap="9" alignItems="center" justify="space-between">
+                                <Table.Row >
                                     <Table.ColumnHeaderCell px="9">Title</Table.ColumnHeaderCell>
                                     <Table.ColumnHeaderCell px="9">Action</Table.ColumnHeaderCell>
                                 </Table.Row>
@@ -52,9 +54,12 @@ export default async function posts(){
                                             {/*</li>*/}
 
 
-                                            <Table.RowHeaderCell px="9" key={post.id}><Link
-                                                href={`/posts/${post.slug}`}>{post.title}</Link></Table.RowHeaderCell>
-                                            <Table.Cell px="8"><Delete id={post.id}/></Table.Cell>
+                                            <Table.RowHeaderCell px="7" key={post.id}><Link
+                                                href={`/posts/${post.slug}`}>{post.title.length > 12 ? <>{post.title.slice(0, 12)}....</>:<>{post.title} </> }</Link></Table.RowHeaderCell>
+                                            <Table.Cell px="8">
+                                                <Delete id={post.id} user={user}/>
+                                            </Table.Cell>
+
                                         </Table.Row>
                                     </>
 
@@ -63,7 +68,7 @@ export default async function posts(){
 
                             </Table.Body>
                         </Table.Root>
-                        <Formmm/>
+                        <Formmm  user={user}/>
 
                     </div>
                     {/*    <h1 className="text-3xl font-semibold"> all posts {posts_count}</h1>*/}

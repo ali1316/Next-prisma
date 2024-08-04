@@ -14,10 +14,20 @@ import '@radix-ui/themes/styles.css';
 import {Button} from "@radix-ui/themes";
 
 
-const Formmm = ({ id }) => {
+
+const Formmm = ({ user }) => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // const [disapled , setDisapled] = useState(false);
+
+    // const {user} = validateRequest();
+    //
+    // if(!user){
+    //     setDisapled(true);
+    // }else{
+    //     setDisapled(false);
+    // }
 
     useEffect(() => {
         async function fetchUsers() {
@@ -40,7 +50,7 @@ const Formmm = ({ id }) => {
             <button
                 className="bg-green4 text-green11 hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
                 type="submit"
-                disabled={pending || loading}
+                disabled={!user}
                 aria-label="Close"
                 color="crimson"
             >
@@ -59,6 +69,7 @@ const Formmm = ({ id }) => {
                         color="jade"
                         variant="soft"
                         radius="large"
+                        disabled={!user}
                         className="inline-flex h-[35px] items-center justify-center bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none m-5">
                         Create a new post
                     </Button>
@@ -116,6 +127,7 @@ const Formmm = ({ id }) => {
                                 <button
                                     className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
                                     aria-label="Close"
+
                                 >
                                     <Cross2Icon />
                                 </button>

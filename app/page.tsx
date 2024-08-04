@@ -7,13 +7,23 @@ import React from 'react';
 import * as Tabs from '@radix-ui/react-tabs';
 import Login from "@/app/login/page";
 import '@radix-ui/themes/styles.css';
-import {Card, Theme, ThemePanel} from "@radix-ui/themes";
+import {Card, Skeleton, Theme, ThemePanel} from "@radix-ui/themes";
 import * as Form from "@radix-ui/react-form";
+import {redirect} from "next/navigation";
 
 export  default async function Home()
+
 {
+    const {user} = await validateRequest();
+    console.log("main page user :",user);
+    if (user){
+        
+        redirect("/posts")
+
+
+    }
     return(
-        <Theme appearance="dark" style={{ background: 'var(--gray-a2)', borderRadius: 'var(--radius-3)' }} radius="full" justify="center"  className="content-center p-6  items-center">
+        <Theme appearance="dark" style={{ background: 'var(--gray-a2)', borderRadius: 'var(--radius-3)' }} radius="full" className="content-center p-6  items-center">
             <Tabs.Root
             className="flex flex-col w-[300px] shadow-[0_2px_10px] shadow-blackA2 mx-auto my-60"
             defaultValue="tab1"

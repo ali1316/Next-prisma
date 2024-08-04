@@ -34,12 +34,12 @@ export default async function Users(){
                         <>
                             <li key={user.id} className="flex items-cener justify-between p-2 ">
                                 {/*<Link href={`/posts/${post.slug}`}>]*/}
-                                <div className="m-2">{user.userName}</div>
+                                <div className="m-2">{user.username}</div>
                                 <div className="m-2">{user.email}</div>
                                     {user.posts.map((post) => (
-                                   <div>
+                                   <div key={post.id}>
                                        {post.title}
-                                       {post.body}
+                                       {post.content}
                                    </div>
                                         ))}
 
