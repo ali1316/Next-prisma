@@ -13,26 +13,27 @@ import db from "@/lib/db";
 import {validateRequest} from "@/lib/validate-req";
 
 export async function CreatPost(formData: FormData) {
-    try {
-        await prisma.post.create({
-            data: {
-                title: formData.get("title") as string,
-                slug: (formData.get("title") as string)
-                    .replace(/\s+/g, "-")
-                    .toLowerCase(),
-                content: formData.get("content") as string,
-                userId: formData.get("userId") as string,
-            },
-        });
-    } catch (e) {
-        console.log(e);
-        throw new Error(`Error creating post: ${e.message}`);
-    }
+    // try {
+    await prisma.post.create({
+        data: {
+            title: formData.get("title") as string,
+            slug: (formData.get("title") as string)
+                .replace(/\s+/g, "-")
+                .toLowerCase(),
+            content: formData.get("content") as string,
+            userId: formData.get("userId") as string,
+        },
+    });
+// }
+        // catch (e) {
+    //     console.log(e);
+    //     throw new Error(`Error creating post: ${e?.message}`);
+    // }
     revalidatePath("/posts");
 }
 
 export async function Delete_post(formData: FormData){
-    const id = formData.get("id");
+    const id = formData.get("id") as string;
     await prisma.post.delete({
         where : {id}
     })
@@ -70,9 +71,9 @@ export async function editPost(formData: FormData){
 //     revalidatePath("/posts") /// to automataiclly refresh the path
 //     redirect("/posts")
 // }
-///////signup validatio
+///////signup validation ////////////////////////////////
 export async function signup(formData: FormData) {
-    "use server";
+
 
     const username = formData.get("username") as string;  // Ensure this is string, not String
     const email = formData.get("email") as string;
@@ -83,14 +84,13 @@ export async function signup(formData: FormData) {
         !/^[a-z0-9_-]+$/.test(username)
     ) {
         return {
-            error: "Invalid username"
-        };
+            error: "Username is invalid",
+        }
+        console.log("user name invalid")
     }
     const password = formData.get("password") as string;  // Ensure this is string, not String
     if (typeof password !== "string" || password.length < 6 || password.length > 255) {
-        return {
-            error: "Invalid password"
-        };
+        console.log("Password must be at least 6 characters long");
     }
 
     const password_hash = await hash(password, {
@@ -128,7 +128,7 @@ export async function signup(formData: FormData) {
 
 }
 
-//////////////// login
+//////////////// login /////////////////////////
 export async function login( formData: FormData){
 
     const username = formData.get("username");
@@ -168,7 +168,7 @@ export async function login( formData: FormData){
     });
     if (!validPassword) {
         return {
-            error: "Incorrect username or password"
+            error : "errorrr"
         };
     }
 
@@ -177,7 +177,7 @@ export async function login( formData: FormData){
     cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
     return redirect("/posts");
 }
-
+///////////// LogOut////////////////////////
 export async function logout(){
 
     const { session } = await validateRequest();
